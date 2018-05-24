@@ -21,9 +21,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/meitu/go-ethereum/accounts/keystore"
+	"github.com/meitu/go-ethereum/log"
 )
 
 // deployNode creates a new node configuration based on some user input.
@@ -91,22 +90,7 @@ func (w *wizard) deployNode(boot bool) {
 	}
 	// If the node is a miner/signer, load up needed credentials
 	if !boot {
-		if w.conf.genesis.Config.Ethash != nil {
-			// Ethash based miners only need an etherbase to mine against
-			fmt.Println()
-			if infos.etherbase == "" {
-				fmt.Printf("What address should the miner user?\n")
-				for {
-					if address := w.readAddress(); address != nil {
-						infos.etherbase = address.Hex()
-						break
-					}
-				}
-			} else {
-				fmt.Printf("What address should the miner user? (default = %s)\n", infos.etherbase)
-				infos.etherbase = w.readDefaultAddress(common.HexToAddress(infos.etherbase)).Hex()
-			}
-		} else if w.conf.genesis.Config.Clique != nil {
+		if w.conf.genesis.Config.Dpos != nil {
 			// If a previous signer was already set, offer to reuse it
 			if infos.keyJSON != "" {
 				if key, err := keystore.DecryptKey([]byte(infos.keyJSON), infos.keyPass); err != nil {

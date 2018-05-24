@@ -19,7 +19,7 @@ package state
 import (
 	"sync"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/meitu/go-ethereum/common"
 )
 
 type account struct {
@@ -101,7 +101,6 @@ func (ms *ManagedState) GetNonce(addr common.Address) uint64 {
 func (ms *ManagedState) SetNonce(addr common.Address, nonce uint64) {
 	ms.mu.Lock()
 	defer ms.mu.Unlock()
-
 	so := ms.GetOrNewStateObject(addr)
 	so.SetNonce(nonce)
 

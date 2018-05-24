@@ -31,23 +31,23 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/console"
-	"github.com/ethereum/go-ethereum/contracts/ens"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/internal/debug"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/discover"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rpc"
-	"github.com/ethereum/go-ethereum/swarm"
-	bzzapi "github.com/ethereum/go-ethereum/swarm/api"
+	"github.com/meitu/go-ethereum/accounts"
+	"github.com/meitu/go-ethereum/accounts/keystore"
+	"github.com/meitu/go-ethereum/cmd/utils"
+	"github.com/meitu/go-ethereum/common"
+	"github.com/meitu/go-ethereum/console"
+	"github.com/meitu/go-ethereum/contracts/ens"
+	"github.com/meitu/go-ethereum/crypto"
+	"github.com/meitu/go-ethereum/ethclient"
+	"github.com/meitu/go-ethereum/internal/debug"
+	"github.com/meitu/go-ethereum/log"
+	"github.com/meitu/go-ethereum/node"
+	"github.com/meitu/go-ethereum/p2p"
+	"github.com/meitu/go-ethereum/p2p/discover"
+	"github.com/meitu/go-ethereum/params"
+	"github.com/meitu/go-ethereum/rpc"
+	"github.com/meitu/go-ethereum/swarm"
+	bzzapi "github.com/meitu/go-ethereum/swarm/api"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -438,10 +438,6 @@ func detectEnsAddr(client *rpc.Client) (common.Address, error) {
 	case version == "1" && block.Hash() == params.MainnetGenesisHash:
 		log.Info("using Mainnet ENS contract address", "addr", ens.MainNetAddress)
 		return ens.MainNetAddress, nil
-
-	case version == "3" && block.Hash() == params.TestnetGenesisHash:
-		log.Info("using Testnet ENS contract address", "addr", ens.TestNetAddress)
-		return ens.TestNetAddress, nil
 
 	default:
 		return common.Address{}, fmt.Errorf("unknown version and genesis hash: %s %s", version, block.Hash())

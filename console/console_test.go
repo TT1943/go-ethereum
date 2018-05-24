@@ -26,11 +26,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/eth"
-	"github.com/ethereum/go-ethereum/internal/jsre"
-	"github.com/ethereum/go-ethereum/node"
+	"github.com/meitu/go-ethereum/common"
+	"github.com/meitu/go-ethereum/core"
+	"github.com/meitu/go-ethereum/eth"
+	"github.com/meitu/go-ethereum/internal/jsre"
+	"github.com/meitu/go-ethereum/node"
 )
 
 const (
@@ -94,8 +94,9 @@ func newTester(t *testing.T, confOverride func(*eth.Config)) *tester {
 		t.Fatalf("failed to create node: %v", err)
 	}
 	ethConf := &eth.Config{
-		Genesis:   core.DeveloperGenesisBlock(15, common.Address{}),
-		Etherbase: common.HexToAddress(testAddress),
+		Genesis:   core.DefaultGenesisBlock(),
+		Coinbase:  common.HexToAddress(testAddress),
+		Validator: common.HexToAddress(testAddress),
 		PowTest:   true,
 	}
 	if confOverride != nil {
@@ -166,6 +167,9 @@ func TestWelcome(t *testing.T) {
 	}
 	if want := fmt.Sprintf("instance: %s", testInstance); !strings.Contains(output, want) {
 		t.Fatalf("console output missing instance: have\n%s\nwant also %s", output, want)
+	}
+	if want := fmt.Sprintf("validator: %s", testAddress); !strings.Contains(output, want) {
+		t.Fatalf("console output missing validator: have\n%s\nwant also %s", output, want)
 	}
 	if want := fmt.Sprintf("coinbase: %s", testAddress); !strings.Contains(output, want) {
 		t.Fatalf("console output missing coinbase: have\n%s\nwant also %s", output, want)

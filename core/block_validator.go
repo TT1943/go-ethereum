@@ -20,11 +20,11 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/consensus"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/meitu/go-ethereum/common/math"
+	"github.com/meitu/go-ethereum/consensus"
+	"github.com/meitu/go-ethereum/core/state"
+	"github.com/meitu/go-ethereum/core/types"
+	"github.com/meitu/go-ethereum/params"
 )
 
 // BlockValidator is responsible for validating block headers, uncles and
@@ -96,6 +96,16 @@ func (v *BlockValidator) ValidateState(block, parent *types.Block, statedb *stat
 	// an error if they don't match.
 	if root := statedb.IntermediateRoot(v.config.IsEIP158(header.Number)); header.Root != root {
 		return fmt.Errorf("invalid merkle root (remote: %x local: %x)", header.Root, root)
+	}
+	return nil
+}
+
+func (v *BlockValidator) ValidateDposState(block *types.Block) error {
+	header := block.Header()
+	localRoot := block.DposCtx().Root()
+	remoteRoot := header.DposContext.Root()
+	if remoteRoot != localRoot {
+		return fmt.Errorf("invalid dpos root (remote: %x local: %x)", remoteRoot, localRoot)
 	}
 	return nil
 }

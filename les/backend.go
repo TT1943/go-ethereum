@@ -22,27 +22,28 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/consensus"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/bloombits"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/eth"
-	"github.com/ethereum/go-ethereum/eth/downloader"
-	"github.com/ethereum/go-ethereum/eth/filters"
-	"github.com/ethereum/go-ethereum/eth/gasprice"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/internal/ethapi"
-	"github.com/ethereum/go-ethereum/light"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/discv5"
-	"github.com/ethereum/go-ethereum/params"
-	rpc "github.com/ethereum/go-ethereum/rpc"
+	"github.com/meitu/go-ethereum/accounts"
+	"github.com/meitu/go-ethereum/common"
+	"github.com/meitu/go-ethereum/common/hexutil"
+	"github.com/meitu/go-ethereum/consensus"
+	"github.com/meitu/go-ethereum/consensus/dpos"
+	"github.com/meitu/go-ethereum/core"
+	"github.com/meitu/go-ethereum/core/bloombits"
+	"github.com/meitu/go-ethereum/core/types"
+	"github.com/meitu/go-ethereum/eth"
+	"github.com/meitu/go-ethereum/eth/downloader"
+	"github.com/meitu/go-ethereum/eth/filters"
+	"github.com/meitu/go-ethereum/eth/gasprice"
+	"github.com/meitu/go-ethereum/ethdb"
+	"github.com/meitu/go-ethereum/event"
+	"github.com/meitu/go-ethereum/internal/ethapi"
+	"github.com/meitu/go-ethereum/light"
+	"github.com/meitu/go-ethereum/log"
+	"github.com/meitu/go-ethereum/node"
+	"github.com/meitu/go-ethereum/p2p"
+	"github.com/meitu/go-ethereum/p2p/discv5"
+	"github.com/meitu/go-ethereum/params"
+	rpc "github.com/meitu/go-ethereum/rpc"
 )
 
 type LightEthereum struct {
@@ -98,7 +99,7 @@ func New(ctx *node.ServiceContext, config *eth.Config) (*LightEthereum, error) {
 		peers:            peers,
 		reqDist:          newRequestDistributor(peers, quitSync),
 		accountManager:   ctx.AccountManager,
-		engine:           eth.CreateConsensusEngine(ctx, config, chainConfig, chainDb),
+		engine:           dpos.New(chainConfig.Dpos, chainDb),
 		shutdownChan:     make(chan bool),
 		networkId:        config.NetworkId,
 		bloomRequests:    make(chan chan *bloombits.Retrieval),
@@ -150,12 +151,7 @@ func lesTopic(genesisHash common.Hash, protocolVersion uint) discv5.Topic {
 
 type LightDummyAPI struct{}
 
-// Etherbase is the address that mining rewards will be send to
-func (s *LightDummyAPI) Etherbase() (common.Address, error) {
-	return common.Address{}, fmt.Errorf("not supported")
-}
-
-// Coinbase is the address that mining rewards will be send to (alias for Etherbase)
+// Coinbase is the address that mining rewards will be send to
 func (s *LightDummyAPI) Coinbase() (common.Address, error) {
 	return common.Address{}, fmt.Errorf("not supported")
 }
